@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cat:*)",
+      "Bash(pnpm add:*)",
+      "Bash(rm:*)",
+      "Bash(node --version:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(pnpm exec tailwindcss:*)",
+      "Bash(pnpm run:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm build:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(awk:*)",
+      "WebSearch",
+      "Bash(curl:*)",
+      "WebFetch(domain:lottiefiles.com)",
+      "mcp__ide__getDiagnostics",
+      "Read(//var/folders/1h/629g62js5w37wqxqnqyyjqzh0000gq/T/TemporaryItems/NSIRD_screencaptureui_ijS1gn/**)",
+      "Read(//var/folders/1h/629g62js5w37wqxqnqyyjqzh0000gq/T/TemporaryItems/NSIRD_screencaptureui_Ybvww8/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
