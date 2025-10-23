@@ -47,6 +47,8 @@ export default function Campfire() {
   const isComposingRef = useRef(false);
   /** リングノート画像のDOM参照（紙切れの起点座標計算用） */
   const memoImageRef = useRef<HTMLImageElement>(null);
+  /** textarea要素のDOM参照（iOS Safari対応: placeholder問題を解決するため） */
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // ==================== ヘルパー関数 ====================
   /**
@@ -127,6 +129,16 @@ export default function Campfire() {
     setScraps((prev) => [...prev, scrap]); // 紙切れを追加
     setFlame(newFlame); // 炎を増加
 
+    // iOS Safari対応: textareaを強制的にリセットしてplaceholder問題を解決
+    if (textareaRef.current) {
+      textareaRef.current.value = '';
+      textareaRef.current.blur();
+      // 次のフレームで再フォーカス（placeholderを完全にリセット）
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 0);
+    }
+
     // 3.2秒後に紙切れを削除（アニメーション完了後）
     setTimeout(() => {
       setScraps((prev) => prev.filter((s) => s.id !== scrap.id));
@@ -167,7 +179,60 @@ export default function Campfire() {
     isComposingRef.current = false;
   };
 
+  /**
+   * textareaがフォーカスされたときに呼ばれる
+   * iOS Safari対応: スクロール位置を強制的にリセット
+   */
+  const handleFocus = () => {
+    // スクロール位置を強制的に(0, 0)に戻す
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
+  /**
+   * textareaからフォーカスが外れたときに呼ばれる
+   * iOS Safari対応: スクロール位置を確実にリセット
+   */
+  const handleBlur = () => {
+    // スクロール位置を強制的に(0, 0)に戻す
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
   // ==================== useEffect（副作用フック） ====================
+  /**
+   * iOS Safari対応: スクロールを完全に防止
+   * ページ全体のスクロールを無効化し、位置を(0, 0)に固定
+   */
+  useEffect(() => {
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+      window.scrollTo(0, 0);
+    };
+
+    const resetScroll = () => {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    };
+
+    // 各種スクロールイベントを監視して防止
+    window.addEventListener('scroll', resetScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    document.addEventListener('scroll', resetScroll, { passive: false });
+
+    // 初期表示時にも確実に(0, 0)にリセット
+    resetScroll();
+
+    return () => {
+      window.removeEventListener('scroll', resetScroll);
+      window.removeEventListener('touchmove', preventScroll);
+      document.removeEventListener('scroll', resetScroll);
+    };
+  }, []);
+
   /**
    * ユーザーのモーション軽減設定を監視
    * アクセシビリティ対応: 動きに敏感なユーザーのためにアニメーションを軽減
@@ -229,7 +294,7 @@ export default function Campfire() {
 
   return (
     <>
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#0a0a15] via-[#0d0d1a] to-[#050508]">
+      <div className="h-[100dvh] w-full relative overflow-hidden bg-gradient-to-b from-[#0a0a15] via-[#0d0d1a] to-[#050508]">
         {/* CSS星空背景 */}
         <div className="absolute inset-0 opacity-60">
           {Array.from({ length: starCount }).map((_, i) => (
@@ -397,11 +462,10 @@ export default function Campfire() {
         </motion.div>
       ))}
 
-      {/* パネルの浮遊するジャーナル */}
+      {/* パネルの浮遊するジャーナル - 中央固定配置 */}
       <div
-        className="fixed w-[calc(100%-2rem)] md:w-[600px] lg:w-[700px] max-w-[700px] left-1/2 -translate-x-1/2 space-y-4"
+        className="fixed w-[calc(100%-2rem)] md:w-[600px] lg:w-[700px] max-w-[700px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 space-y-4"
         style={{
-          bottom: '-5rem',
           zIndex: 100,
         }}
       >
@@ -423,6 +487,7 @@ export default function Campfire() {
 
             {/* テキスト入力欄（ノートの紙の部分に配置） */}
             <textarea
+              ref={textareaRef}
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -430,13 +495,16 @@ export default function Campfire() {
               // これにより「変換確定のEnter」と「送信のEnter」を区別できる
               onCompositionStart={handleCompositionStart}
               onCompositionEnd={handleCompositionEnd}
-              placeholder="頭に思い浮かぶもやもやを書こう。Enterで燃やせるよ。"
-              autoFocus
-              rows={3}
+              // iOS Safari対応: フォーカス時/ブラー時のスクロール防止
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              placeholder="頭に思い浮かぶもやもやを書こう。確定ボタンで焚き火に投げ込めるよ。"
+              rows={4}
               className="absolute z-10 top-[30%] left-[10%] w-[80%] text-gray-800 placeholder:text-gray-400 focus:outline-none leading-relaxed font-medium bg-transparent border-none resize-none"
               style={{
                 fontFamily: '"Klee One", cursive, sans-serif',
-                fontSize: 'clamp(18px, 4vw, 36px)',
+                // iOS対応: 16px未満だとズームが発生するため、最小16pxを確保
+                fontSize: 'max(16px, min(4vw, 36px))',
               }}
             />
           </div>
