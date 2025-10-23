@@ -3,7 +3,8 @@ import { FLAME_CONFIG } from '../constants';
 
 /**
  * 炎の減衰システムを管理するカスタムフック
- * 5分ごとに炎が自動的に減衰する
+ * DECAY_INTERVAL、何も投げ込まないと1ランク火力が下がり、
+ * 放置すると初期値まで戻る
  */
 export const useFlameDecay = (
   lastDecayTime: number,

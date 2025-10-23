@@ -35,8 +35,15 @@ export const useCampfireState = () => {
 
   const decayFlame = useCallback(() => {
     setFlame((prev) => {
-      const decayAmount = Math.max(prev * FLAME_CONFIG.DECAY_RATE, FLAME_CONFIG.MIN_DECAY);
-      return Math.max(FLAME_CONFIG.MIN, prev - decayAmount);
+      // 初期値より大きい場合のみ減衰
+      if (prev > FLAME_CONFIG.TARGET) {
+        // 1ランク（RANK_STEP）ずつ減少
+        const newFlame = prev - FLAME_CONFIG.RANK_STEP;
+        // 初期値を下回らないようにする
+        return Math.max(FLAME_CONFIG.TARGET, newFlame);
+      }
+      // 初期値以下の場合は減衰しない
+      return prev;
     });
     setLastDecayTime(Date.now());
   }, []);

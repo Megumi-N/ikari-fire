@@ -7,14 +7,12 @@
 export const FLAME_CONFIG = {
   /** 炎の初期値 */
   INITIAL: 20,
-  /** 炎の最小値（完全には消えない） */
-  MIN: 10,
+  /** 炎の減衰先（放置時に戻る値） */
+  TARGET: 20,
   /** 炎の減衰間隔（ミリ秒） */
-  DECAY_INTERVAL: 5 * 60 * 1000, // 5分
-  /** 炎の減衰率（現在の値の20%） */
-  DECAY_RATE: 0.2,
-  /** 炎の最小減衰量 */
-  MIN_DECAY: 5,
+  DECAY_INTERVAL: 10 * 1000, // 10秒
+  /** 1ランクの火力（テキスト強度に応じた上昇量の平均） */
+  RANK_STEP: 15,
   /** 炎の速度の基本倍率 */
   SPEED_BASE: 1,
   /** 炎の速度の最小倍率 */
@@ -153,7 +151,9 @@ export const calculateFlameSpeed = (flame: number): number => {
  * 炎の強さからスケールを計算
  */
 export const calculateFlameScale = (flame: number): number => {
-  return FLAME_CONFIG.SCALE_BASE + (flame / 100) * FLAME_CONFIG.SCALE_MULTIPLIER;
+  return (
+    FLAME_CONFIG.SCALE_BASE + (flame / 100) * FLAME_CONFIG.SCALE_MULTIPLIER
+  );
 };
 
 /**
@@ -176,18 +176,25 @@ export const calculateGlowSize = (flame: number): number => {
  * 炎の強さからLottieの幅を計算
  */
 export const calculateLottieWidth = (flame: number): number => {
-  return LOTTIE_CONFIG.FLAME_BASE_WIDTH + (flame / 100) * LOTTIE_CONFIG.FLAME_WIDTH_INCREASE;
+  return (
+    LOTTIE_CONFIG.FLAME_BASE_WIDTH +
+    (flame / 100) * LOTTIE_CONFIG.FLAME_WIDTH_INCREASE
+  );
 };
 
 /**
  * 炎の強さからLottieの高さを計算
  */
-export const calculateLottieHeight = (flame: number, isMobile: boolean): number => {
+export const calculateLottieHeight = (
+  flame: number,
+  isMobile: boolean
+): number => {
   const maxHeight = isMobile
     ? LOTTIE_CONFIG.FLAME_MAX_HEIGHT_MOBILE
     : LOTTIE_CONFIG.FLAME_MAX_HEIGHT_DESKTOP;
   return Math.min(
-    LOTTIE_CONFIG.FLAME_BASE_HEIGHT + (flame / 100) * LOTTIE_CONFIG.FLAME_HEIGHT_INCREASE,
+    LOTTIE_CONFIG.FLAME_BASE_HEIGHT +
+      (flame / 100) * LOTTIE_CONFIG.FLAME_HEIGHT_INCREASE,
     maxHeight
   );
 };
@@ -196,12 +203,16 @@ export const calculateLottieHeight = (flame: number, isMobile: boolean): number 
  * 炎の強さから明るさフィルターを計算
  */
 export const calculateBrightness = (flame: number): number => {
-  return LOTTIE_CONFIG.BRIGHTNESS_BASE + flame / LOTTIE_CONFIG.BRIGHTNESS_MULTIPLIER;
+  return (
+    LOTTIE_CONFIG.BRIGHTNESS_BASE + flame / LOTTIE_CONFIG.BRIGHTNESS_MULTIPLIER
+  );
 };
 
 /**
  * 炎の強さから彩度フィルターを計算
  */
 export const calculateSaturation = (flame: number): number => {
-  return LOTTIE_CONFIG.SATURATION_BASE + flame / LOTTIE_CONFIG.SATURATION_MULTIPLIER;
+  return (
+    LOTTIE_CONFIG.SATURATION_BASE + flame / LOTTIE_CONFIG.SATURATION_MULTIPLIER
+  );
 };
