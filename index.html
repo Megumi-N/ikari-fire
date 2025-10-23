@@ -1,16 +1,56 @@
 <!doctype html>
-<html lang="en" style="background: linear-gradient(180deg, #0a0a15 0%, #0d0d1a 50%, #050508 100%);">
+<html lang="ja">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5KFGT2SSPT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5KFGT2SSPT');
+    </script>
+
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- SEO Meta Tags -->
+    <title>焚き火 - もやもやを焚き火に投げ込んで心を軽くしよう</title>
+    <meta name="description" content="頭の中のもやもやを紙に書いて焚き火に投げ込もう。炎が揺らめく癒やしの空間で、心を軽くするシンプルなWebアプリ。" />
+    <meta name="keywords" content="焚き火,もやもや,癒やし,リラックス,ストレス解消,メンタルヘルス" />
+    <meta name="author" content="焚き火" />
+    <meta name="theme-color" content="#0a0a15" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ikari-fire.netlify.app/" />
+    <meta property="og:title" content="焚き火 - もやもやを焚き火に投げ込んで心を軽くしよう" />
+    <meta property="og:description" content="頭の中のもやもやを紙に書いて焚き火に投げ込もう。炎が揺らめく癒やしの空間で、心を軽くするシンプルなWebアプリ。" />
+    <meta property="og:image" content="https://ikari-fire.netlify.app/card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ja_JP" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://ikari-fire.netlify.app/" />
+    <meta name="twitter:title" content="焚き火 - もやもやを焚き火に投げ込んで心を軽くしよう" />
+    <meta name="twitter:description" content="頭の中のもやもやを紙に書いて焚き火に投げ込もう。炎が揺らめく癒やしの空間で、心を軽くするシンプルなWebアプリ。" />
+    <meta name="twitter:image" content="https://ikari-fire.netlify.app/card.png" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Preload -->
     <link rel="preload" as="image" href="/memo.png">
-    <title>焚き火</title>
   </head>
-  <body class="m-0 p-0" style="background: transparent;">
+  <body class="m-0 p-0">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
